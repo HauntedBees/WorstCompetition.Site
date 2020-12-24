@@ -9,6 +9,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import utc from 'dayjs/plugin/utc';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
+import 'src/components/components.module';
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);

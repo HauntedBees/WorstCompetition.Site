@@ -6,7 +6,7 @@
           <h4>Leaderboards for {{$dayjs().format("MMM Do")}}</h4>
           <ol>
             <li v-for="user in leaderboards" :key="user.ID">
-              <router-link :to="'/users/' + user.ID"></router-link>{{user.Name}} ({{user.Score}})
+              <router-link :to="'/users/' + user.ID">{{user.Name}} ({{user.Score}})</router-link>
             </li>
           </ol>
         </v-sheet>
@@ -26,8 +26,15 @@
             <v-container>
               <v-row>
                 <v-col v-for="action in actions" :key="action.ID">
-                  <v-card style="min-width: 240px; min-height: 180px" color="accent" elevation="2">
-                    <div :class="'corner ' + action.Type"><v-icon>mdi-{{typeIconXref[action.Type]}}</v-icon></div>
+                  <v-card class="action-card" color="accent" elevation="2">
+                    <div :class="'action-card--corner ' + action.Type">
+                      <v-tooltip right>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-icon v-bind="attrs" v-on="on">mdi-{{typeIconXref[action.Type]}}</v-icon>
+                        </template>
+                        <span>"{{action.Type}}" Type</span>
+                      </v-tooltip>
+                    </div>
                     <v-card-title class="justify-center pb-1 pt-2">
                       {{$t(`a_${action.ID}_name`)}}
                     </v-card-title>
@@ -69,7 +76,11 @@
   </v-container>
 </template>
 <style lang="scss">
-  .corner {
+  .action-card {
+    min-width: 200px;
+    min-height: 200px;
+  }
+  .action-card--corner {
     border-right: 50px solid transparent;
     border-left: 50px solid;
     border-bottom: 50px solid transparent;
@@ -83,11 +94,16 @@
       margin-top: 4px;
     }
   }
-  .corner.gain { border-left-color: rgb(80, 140, 60) }
-  .corner.defense { border-left-color: rgb(80, 90, 160) }
+  .action-card--corner.Gain { border-left-color: rgb(80, 140, 60) }
+  .action-card--corner.Defense { border-left-color: rgb(80, 90, 160) }
+  .action-card--corner.Bank { border-left-color: rgb(160, 90, 80) }
+  .action-card--corner.Malice { border-left-color: rgb(90, 100, 80) }
+  .action-card--corner.Luck { border-left-color: rgb(160, 160, 90) }
+  .action-card--corner.Help { border-left-color: rgb(160, 80, 160) }
 </style>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { Types, Actions } from 'src/data/actions';
 @Component
 export default class Home extends Vue {
   loggedIn = true;
@@ -97,25 +113,7 @@ export default class Home extends Vue {
   leaderboards = [
     { Name: "Jeff", Score: 12, Emoji: "XD", ID: 12 }
   ];
-  typeIconXref = {
-    "gain": "arrow-up-thick",
-    "defense": "shield"
-  };
-  actions = [
-    { ID: "coll", Icon: "account-group", Type: "gain" },
-    { ID: "bost", Icon: "gold", Type: "gain" },
-    { ID: "hold", Icon: "pause-circle", Type: "defense" },
-    { ID: "avrg", Icon: "equalizer" },
-    { ID: "down", Icon: "trending-down" },
-    { ID: "rise", Icon: "trending-up" },
-    { ID: "cntr", Icon: "knife-military", Type: "defense" },
-    { ID: "boom", Icon: "boomerang" },
-    { ID: "dice", Icon: "dice-multiple" },
-    { ID: "hart", Icon: "heart", Type: "gain" },
-    { ID: "rand", Icon: "arrow-decision" },
-    { ID: "bnki", Icon: "bank-transfer-in" },
-    { ID: "bnko", Icon: "bank-transfer-out" },
-    { ID: "bnkx", Icon: "bank-off" }
-  ];
+  typeIconXref = Types;
+  actions = Object.keys(Actions).map(a => ({ ID: a, Type: Actions[a].Type, Icon: Actions[a].Icon }));
 }
 </script>
