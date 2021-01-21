@@ -1,3 +1,3 @@
 import Vue from "vue";
-import Emoji from "src/components/Emoji.vue";
+import { Emoji } from "bee-vue-gang";
 Vue.component("emoji", Emoji);
